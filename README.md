@@ -1,98 +1,230 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Visions Portfolio API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend API для управления данными портфолио, включая проекты, CV информацию и навыки.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Быстрый старт
 
-## Description
+### Предварительные требования
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js 18+
+- PostgreSQL 14+
+- npm или yarn
 
-## Project setup
+### Установка
+
+1. **Клонируйте репозиторий и перейдите в папку сервера:**
+
+   ```bash
+   cd visions-server
+   npm install
+   ```
+
+2. **Настройте переменные окружения:**
+   Создайте файл `.env` в корне проекта:
+
+   ```env
+   # Database Configuration
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USERNAME=postgres
+   DB_PASSWORD=postgres
+   DB_NAME=visions_db
+
+   # Application Configuration
+   NODE_ENV=development
+   PORT=3000
+   ```
+
+3. **Создайте базу данных PostgreSQL:**
+
+   ```sql
+   CREATE DATABASE visions_db;
+   ```
+
+4. **Запустите сервер:**
+
+   ```bash
+   npm run start:dev
+   ```
+
+5. **Инициализируйте данные (опционально):**
+   ```bash
+   npm run seed
+   ```
+
+## 📚 API Documentation
+
+После запуска сервера, Swagger документация доступна по адресу:
+
+- **Swagger UI:** http://localhost:3000/api/docs
+- **API Base URL:** http://localhost:3000/api
+
+## 🛠 API Endpoints для проектов
+
+### Базовые CRUD операции
+
+| Method | Endpoint                          | Description                                      |
+| ------ | --------------------------------- | ------------------------------------------------ |
+| GET    | `/api/projects`                   | Получить все проекты                             |
+| GET    | `/api/projects/featured`          | Получить рекомендуемые проекты                   |
+| GET    | `/api/projects/by-language/:code` | Получить проекты по языку (совместимо с Angular) |
+| GET    | `/api/projects/:id`               | Получить проект по ID                            |
+| POST   | `/api/projects`                   | Создать новый проект                             |
+| PATCH  | `/api/projects/:id`               | Обновить проект                                  |
+| DELETE | `/api/projects/:id`               | Удалить проект                                   |
+
+### Специальные операции
+
+| Method | Endpoint                            | Description                        |
+| ------ | ----------------------------------- | ---------------------------------- |
+| PATCH  | `/api/projects/:id/toggle-featured` | Переключить статус "рекомендуемый" |
+| PATCH  | `/api/projects/reorder/:languageId` | Изменить порядок проектов          |
+
+### Примеры запросов
+
+#### Создать новый проект
 
 ```bash
-$ npm install
+curl -X POST http://localhost:3000/api/projects \
+  -H "Content-Type: application/json" \
+  -d '{
+    "languageId": 1,
+    "title": "My New Project",
+    "description": "Project description",
+    "imageUrl": "./assets/images/project.png",
+    "technologies": ["Angular", "TypeScript", "NestJS"],
+    "demoLink": "https://demo.example.com",
+    "codeLink": "https://github.com/user/repo",
+    "featured": true,
+    "showDemo": true,
+    "showCode": true
+  }'
 ```
 
-## Compile and run the project
+#### Получить проекты для Angular сервиса
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+curl http://localhost:3000/api/projects/by-language/de
 ```
 
-## Run tests
+Ответ будет в формате, совместимом с существующим Angular ProjectService:
+
+```json
+{
+  "featuredProjects": [
+    {
+      "id": 1,
+      "title": "visions.shkrsltn",
+      "description": "Portfolio description...",
+      "imageUrl": "./assets/images/project-images/visions-shkrsltnv.png",
+      "technologies": ["Angular", "TypeScript", "OpenAI API"],
+      "demoLink": "https://shkrsltn.github.io/visions.shkrsltn/",
+      "codeLink": "https://github.com/ShkrSltn/visions.shkrsltn.git",
+      "featured": true,
+      "showDemo": false,
+      "showCode": true
+    }
+  ]
+}
+```
+
+## 🗄 Структура базы данных
+
+### Таблицы
+
+#### `languages`
+
+- `id` - Primary key
+- `code` - Код языка (en, ru, de, tr, ua)
+- `name` - Название языка
+- `isActive` - Активен ли язык
+- `isDefault` - Язык по умолчанию
+
+#### `projects`
+
+- `id` - Primary key
+- `languageId` - Foreign key к таблице languages
+- `title` - Название проекта
+- `description` - Описание проекта
+- `imageUrl` - URL изображения
+- `demoLink` - Ссылка на демо
+- `codeLink` - Ссылка на код
+- `featured` - Рекомендуемый проект
+- `showDemo` - Показывать кнопку демо
+- `showCode` - Показывать кнопку кода
+- `orderIndex` - Порядок сортировки
+
+#### `project_technologies`
+
+- `id` - Primary key
+- `projectId` - Foreign key к таблице projects
+- `technology` - Название технологии
+- `orderIndex` - Порядок сортировки
+
+## 📦 Скрипты
 
 ```bash
-# unit tests
-$ npm run test
+# Разработка
+npm run start:dev      # Запуск с hot reload
+npm run start:debug    # Запуск в режиме отладки
 
-# e2e tests
-$ npm run test:e2e
+# Производство
+npm run build          # Сборка проекта
+npm run start:prod     # Запуск production сервера
 
-# test coverage
-$ npm run test:cov
+# База данных
+npm run seed           # Инициализация данных
+
+# Тестирование
+npm run test           # Запуск тестов
+npm run test:watch     # Тесты с наблюдением
+npm run test:e2e       # End-to-end тесты
+
+# Форматирование
+npm run format         # Форматирование кода
+npm run lint           # Проверка линтером
 ```
 
-## Deployment
+## 🔧 Переменные окружения
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+| Variable      | Description       | Default     |
+| ------------- | ----------------- | ----------- |
+| `DB_HOST`     | PostgreSQL host   | localhost   |
+| `DB_PORT`     | PostgreSQL port   | 5432        |
+| `DB_USERNAME` | Database username | postgres    |
+| `DB_PASSWORD` | Database password | postgres    |
+| `DB_NAME`     | Database name     | visions_db  |
+| `NODE_ENV`    | Environment mode  | development |
+| `PORT`        | Server port       | 3000        |
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🔗 Интеграция с Angular
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+API полностью совместимо с существующим Angular ProjectService. Для перехода:
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+1. Обновите URL в `ProjectService`:
 
-## Resources
+   ```typescript
+   private apiUrl = 'http://localhost:3000/api/projects/by-language';
+   ```
 
-Check out a few resources that may come in handy when working with NestJS:
+2. API вернет данные в том же формате, что и JSON файлы
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🚦 Статусы разработки
 
-## Support
+- ✅ **Базовые CRUD операции**
+- ✅ **Swagger документация**
+- ✅ **Валидация данных**
+- ✅ **Многоязычность**
+- ✅ **Управление порядком**
+- ✅ **Совместимость с Angular**
+- 🔄 **Аутентификация** (в планах)
+- 🔄 **Загрузка файлов** (в планах)
+- 🔄 **Admin панель** (в планах)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 📝 Следующие шаги
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. Добавить аутентификацию и авторизацию
+2. Создать API для CV данных
+3. Создать API для навыков
+4. Добавить загрузку изображений
+5. Создать Vue.js админ панель
