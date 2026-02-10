@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,7 +19,9 @@ import {
   ApiParam,
   ApiQuery,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -33,6 +36,8 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Create a new project' })
   @ApiResponse({
     status: 201,
@@ -113,6 +118,8 @@ export class ProjectsController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Update project' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateProjectDto })
@@ -133,6 +140,8 @@ export class ProjectsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete project' })
   @ApiParam({ name: 'id', type: Number })
@@ -149,6 +158,8 @@ export class ProjectsController {
   }
 
   @Patch(':id/toggle-featured')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Toggle featured status of project' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
@@ -167,6 +178,8 @@ export class ProjectsController {
   }
 
   @Patch('reorder/:languageId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Reorder projects for a specific language' })
   @ApiParam({ name: 'languageId', type: Number })
   @ApiBody({

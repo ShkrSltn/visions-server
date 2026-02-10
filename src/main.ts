@@ -37,7 +37,11 @@ async function bootstrap() {
       'API for managing portfolio data including projects, CV information, and skills',
     )
     .setVersion('1.0')
+    .addTag('auth', 'Authentication endpoints')
+    .addTag('languages', 'Language management endpoints')
     .addTag('projects', 'Project management endpoints')
+    .addTag('skills', 'Skills management endpoints')
+    .addTag('cv', 'CV data management endpoints')
     .addTag('app', 'Application health endpoints')
     .addBearerAuth(
       {
