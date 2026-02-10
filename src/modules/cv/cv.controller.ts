@@ -71,6 +71,25 @@ export class CvController {
     return this.cvService.findByLanguage(languageCode);
   }
 
+  // ========== Admin: raw entities with IDs ==========
+
+  @Get('admin/by-language/:languageCode')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get full CV data with entity IDs for admin CRUD',
+  })
+  @ApiParam({
+    name: 'languageCode',
+    type: String,
+    description: 'Language code (en, ru, de, tr, ua)',
+  })
+  async findByLanguageAdmin(
+    @Param('languageCode') languageCode: string,
+  ) {
+    return this.cvService.findByLanguageAdmin(languageCode);
+  }
+
   // ========== Profile ==========
 
   @Put('profile/:languageId')

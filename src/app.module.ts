@@ -10,6 +10,7 @@ import { LanguagesModule } from './modules/languages/languages.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { SkillsModule } from './modules/skills/skills.module';
 import { CvModule } from './modules/cv/cv.module';
+import { TranslationsModule } from './modules/translations/translations.module';
 
 // Entities
 import { Admin } from './entities/admin.entity';
@@ -27,6 +28,7 @@ import { CvLanguage } from './entities/cv-language.entity';
 import { Reference } from './entities/reference.entity';
 import { Hobby } from './entities/hobby.entity';
 import { ContactInfo } from './entities/contact-info.entity';
+import { Translation } from './entities/translation.entity';
 
 @Module({
   imports: [
@@ -56,6 +58,7 @@ import { ContactInfo } from './entities/contact-info.entity';
         Reference,
         Hobby,
         ContactInfo,
+        Translation,
       ],
       synchronize: process.env.NODE_ENV !== 'production', // Only for development
       logging: process.env.NODE_ENV === 'development',
@@ -65,6 +68,7 @@ import { ContactInfo } from './entities/contact-info.entity';
     ProjectsModule,
     SkillsModule,
     CvModule,
+    TranslationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

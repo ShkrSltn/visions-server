@@ -20,6 +20,7 @@ import { CvLanguage } from '../entities/cv-language.entity';
 import { Reference } from '../entities/reference.entity';
 import { Hobby } from '../entities/hobby.entity';
 import { ContactInfo } from '../entities/contact-info.entity';
+import { Translation } from '../entities/translation.entity';
 
 // Path to frontend data files
 const FRONTEND_DATA_PATH = path.resolve(
@@ -31,6 +32,18 @@ const FRONTEND_DATA_PATH = path.resolve(
   'src',
   'assets',
   'data',
+);
+
+// Path to frontend i18n files
+const FRONTEND_I18N_PATH = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'visions.shkrsltn',
+  'src',
+  'assets',
+  'i18n',
 );
 
 const LANGUAGES_CONFIG = [
@@ -77,6 +90,7 @@ async function seed() {
       Reference,
       Hobby,
       ContactInfo,
+      Translation,
     ],
     synchronize: true,
     logging: false,
@@ -412,6 +426,68 @@ async function seed() {
     }
 
     console.log(`  Seeded CV data for ${langCode}`);
+  }
+
+  // ========== 6. Seed Translations (i18n) ==========
+  console.log('\n--- Seeding Translations (i18n) ---');
+  const translationRepo = dataSource.getRepository(Translation);
+
+  function flattenJson(
+    obj: Record<string, any>,
+    prefix = '',
+  ): Record<string, string> {
+    const result: Record<string, string> = {};
+    for (const [k, v] of Object.entries(obj)) {
+      const fullKey = prefix ? `${prefix}.${k}` : k;
+      if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
+        Object.assign(result, flattenJson(v, fullKey));
+      } else {
+        result[fullKey] = String(v);
+      }
+    }
+    return result;
+  }
+
+  for (const langCode of Object.keys(languageMap)) {
+    const i18nFilePath = path.join(FRONTEND_I18N_PATH, `${langCode}.json`);
+    if (!fs.existsSync(i18nFilePath)) {
+      console.log(`  i18n file not found for ${langCode}, skipping.`);
+      continue;
+    }
+
+    const existingCount = await translationRepo.count({
+      where: { languageCode: langCode },
+    });
+    if (existingCount > 0) {
+      console.log(
+        `  Translations for ${langCode} already exist (${existingCount}), skipping.`,
+      );
+      continue;
+    }
+
+    const jsonContent = JSON.parse(
+      fs.readFileSync(i18nFilePath, 'utf-8'),
+    );
+    const flat = flattenJson(jsonContent);
+
+    let count = 0;
+    for (const [fullPath, value] of Object.entries(flat)) {
+      const lastDot = fullPath.lastIndexOf('.');
+      const namespace = lastDot > -1 ? fullPath.substring(0, lastDot) : '';
+      const key = lastDot > -1 ? fullPath.substring(lastDot + 1) : fullPath;
+
+      await translationRepo.save(
+        translationRepo.create({
+          languageCode: langCode,
+          namespace,
+          key,
+          value,
+        }),
+      );
+      count++;
+    }
+
+    console.log(`  Seeded ${count} translations for ${langCode}`);
   }
 
   console.log('\n--- Seed completed successfully! ---');

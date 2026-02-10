@@ -42,6 +42,7 @@ async function bootstrap() {
     .addTag('projects', 'Project management endpoints')
     .addTag('skills', 'Skills management endpoints')
     .addTag('cv', 'CV data management endpoints')
+    .addTag('translations', 'Translation management endpoints')
     .addTag('app', 'Application health endpoints')
     .addBearerAuth(
       {

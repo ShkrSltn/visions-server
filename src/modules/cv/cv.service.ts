@@ -192,6 +192,69 @@ export class CvService {
     };
   }
 
+  /**
+   * Admin endpoint: returns raw entities WITH IDs for CRUD operations.
+   */
+  async findByLanguageAdmin(languageCode: string): Promise<any> {
+    const language = await this.getLanguageByCode(languageCode);
+    const langId = language.id;
+
+    const [
+      profile,
+      cvSkills,
+      workExperiences,
+      educations,
+      certifications,
+      cvLanguages,
+      references,
+      hobbies,
+      contactInfo,
+    ] = await Promise.all([
+      this.cvProfileRepository.findOne({ where: { languageId: langId } }),
+      this.cvSkillRepository.find({
+        where: { languageId: langId },
+        order: { level: 'ASC', orderIndex: 'ASC' },
+      }),
+      this.workExperienceRepository.find({
+        where: { languageId: langId },
+        order: { orderIndex: 'ASC' },
+      }),
+      this.educationRepository.find({
+        where: { languageId: langId },
+        order: { orderIndex: 'ASC' },
+      }),
+      this.certificationRepository.find({
+        where: { languageId: langId },
+        order: { orderIndex: 'ASC' },
+      }),
+      this.cvLanguageRepository.find({
+        where: { languageId: langId },
+        order: { orderIndex: 'ASC' },
+      }),
+      this.referenceRepository.find({
+        where: { languageId: langId },
+        order: { orderIndex: 'ASC' },
+      }),
+      this.hobbyRepository.find({
+        where: { languageId: langId },
+        order: { orderIndex: 'ASC' },
+      }),
+      this.contactInfoRepository.findOne({ where: { languageId: langId } }),
+    ]);
+
+    return {
+      profile: profile || null,
+      cvSkills,
+      workExperiences,
+      educations,
+      certifications,
+      cvLanguages,
+      references,
+      hobbies,
+      contact: contactInfo || null,
+    };
+  }
+
   // ========== Profile ==========
   async upsertProfile(
     languageId: number,
