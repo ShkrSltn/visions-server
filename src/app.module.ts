@@ -11,6 +11,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { SkillsModule } from './modules/skills/skills.module';
 import { CvModule } from './modules/cv/cv.module';
 import { TranslationsModule } from './modules/translations/translations.module';
+import { BlogModule } from './modules/blog/blog.module';
 
 // Entities
 import { Admin } from './entities/admin.entity';
@@ -29,6 +30,9 @@ import { Reference } from './entities/reference.entity';
 import { Hobby } from './entities/hobby.entity';
 import { ContactInfo } from './entities/contact-info.entity';
 import { Translation } from './entities/translation.entity';
+import { BlogPost } from './entities/blog-post.entity';
+import { BlogPostTranslation } from './entities/blog-post-translation.entity';
+import { BlogBlock } from './entities/blog-block.entity';
 
 @Module({
   imports: [
@@ -59,6 +63,9 @@ import { Translation } from './entities/translation.entity';
         Hobby,
         ContactInfo,
         Translation,
+        BlogPost,
+        BlogPostTranslation,
+        BlogBlock,
       ],
       synchronize: process.env.NODE_ENV !== 'production', // Only for development
       logging: process.env.NODE_ENV === 'development',
@@ -69,6 +76,7 @@ import { Translation } from './entities/translation.entity';
     SkillsModule,
     CvModule,
     TranslationsModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
