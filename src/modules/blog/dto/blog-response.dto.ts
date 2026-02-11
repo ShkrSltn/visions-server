@@ -8,10 +8,10 @@ export class BlogBlockResponseDto {
   type: string;
 
   @ApiPropertyOptional()
-  content: string;
+  content?: string;
 
   @ApiPropertyOptional()
-  metadata: Record<string, any>;
+  metadata?: Record<string, any>;
 
   @ApiProperty()
   orderIndex: number;
@@ -25,13 +25,13 @@ export class BlogTranslationResponseDto {
   languageId: number;
 
   @ApiPropertyOptional()
-  languageCode: string;
+  languageCode?: string;
 
   @ApiProperty()
   title: string;
 
   @ApiPropertyOptional()
-  description: string;
+  description?: string;
 
   @ApiProperty()
   isVisible: boolean;
@@ -48,13 +48,13 @@ export class BlogPostResponseDto {
   slug: string;
 
   @ApiPropertyOptional()
-  coverImageUrl: string;
+  coverImageUrl?: string;
 
   @ApiProperty()
   isPublished: boolean;
 
   @ApiPropertyOptional()
-  publishedAt: Date;
+  publishedAt?: Date;
 
   @ApiProperty()
   createdAt: Date;
@@ -74,19 +74,19 @@ export class BlogPostListItemDto {
   slug: string;
 
   @ApiPropertyOptional()
-  coverImageUrl: string;
+  coverImageUrl?: string;
 
   @ApiProperty()
   title: string;
 
   @ApiPropertyOptional()
-  description: string;
+  description?: string;
 
   @ApiProperty()
   isPublished: boolean;
 
   @ApiPropertyOptional()
-  publishedAt: Date;
+  publishedAt?: Date;
 
   @ApiProperty()
   createdAt: Date;
