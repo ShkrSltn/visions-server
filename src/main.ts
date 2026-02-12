@@ -7,12 +7,21 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS for admin panel
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:4200',
+  ];
+
+  // Add production origins from env (comma-separated)
+  if (process.env.CORS_ORIGINS) {
+    allowedOrigins.push(
+      ...process.env.CORS_ORIGINS.split(',').map((o) => o.trim()),
+    );
+  }
+
   app.enableCors({
-    origin: [
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://localhost:4200',
-    ], // Vite dev server
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

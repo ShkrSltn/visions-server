@@ -67,7 +67,9 @@ import { BlogBlock } from './entities/blog-block.entity';
         BlogPostTranslation,
         BlogBlock,
       ],
-      synchronize: process.env.NODE_ENV !== 'production', // Only for development
+      synchronize:
+        process.env.DB_SYNCHRONIZE === 'true' ||
+        process.env.NODE_ENV !== 'production',
       logging: process.env.NODE_ENV === 'development',
     }),
     AuthModule,
